@@ -25,7 +25,7 @@ func (u Print) ContactList() {
 		fmt.Printf("   Phone: %s\n\n", val.Phone)
 	}
 	fmt.Printf("\n================================\n")
-	fmt.Printf("(0) Back   (1) Delete   (3) Edit\n\n")
+	fmt.Printf("(0) Back   (1) Delete   (2) Edit\n\n")
 }
 
 func (u Print) ContactListDel() []models.User {
@@ -33,7 +33,18 @@ func (u Print) ContactListDel() []models.User {
 	fmt.Printf("* DELETE CONTACT\n\n")
 	for x, val := range data {
 		fmt.Printf("(%d) Name : %s\n", x+1, val.Name)
-		fmt.Printf("   Phone: %s\n\n", val.Phone)
+		fmt.Printf("    Phone: %s\n\n", val.Phone)
+	}
+	fmt.Printf("\n================================\n")
+	return data
+}
+
+func (u Print) ContactListEdit() []models.User {
+	data := services.GetContactList()
+	fmt.Printf("* EDIT CONTACT\n\n")
+	for x, val := range data {
+		fmt.Printf("(%d) Name : %s\n", x+1, val.Name)
+		fmt.Printf("    Phone: %s\n\n", val.Phone)
 	}
 	fmt.Printf("\n================================\n")
 	return data

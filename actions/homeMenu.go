@@ -41,6 +41,9 @@ func contactList() {
 		case "1":
 			utils.ClearTerm(0, "")
 			deleteContact()
+		case "2":
+			utils.ClearTerm(0, "")
+			editContact()
 		default:
 			utils.ClearTerm(1, "Invalid Input")
 		}
@@ -57,6 +60,37 @@ func createContact() {
 	if err == nil {
 		utils.ClearTerm(0, "")
 		return
+	}
+}
+
+func editContact() {
+	data := dis.ContactListEdit()
+	res, _ := utils.Io("\nInsert number: ")
+	var id int
+	name := ""
+	for x, val := range data {
+		if res == strconv.Itoa(x+1) {
+			name = val.Name
+			id = val.Id
+		}
+	}
+	if name == "" {
+		utils.ClearTerm(1, "Invalid Input")
+		editContact()
+		return
+	}
+	fmt.Printf("You select %s\n", name)
+	newPhone, _ := utils.Io("\nInsert new Phone Number : ")
+	fmt.Printf("\nName : %s", name)
+	fmt.Printf("\nPhone : %s", newPhone)
+	response, _ := utils.Io("\nSave new Phone Number? (y/n): ")
+	if response == "y" {
+		services.UpdateContact(&id, &newPhone)
+		utils.ClearTerm(0, "")
+		return
+	} else {
+		utils.ClearTerm(0, "")
+		editContact()
 	}
 }
 
