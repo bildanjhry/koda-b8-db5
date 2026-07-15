@@ -1,14 +1,11 @@
 package main
 
 import (
-	"contact-list/services"
-	"fmt"
+	"contact-list/actions"
+	"contact-list/utils"
 )
 
 func main() {
-	//response := services.CreateContact("Dona", "07372213")
-	id := 14
-	services.DeleteContact(&id)
-	res := services.GetContactList()
-	fmt.Println(res)
+	utils.ClearTerm(0, "")
+	actions.HomeMenu()
 }
