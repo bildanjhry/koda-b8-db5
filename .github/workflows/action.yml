@@ -1,0 +1,53 @@
+name : Contact List
+run-name: Working on Contact List
+on :
+  push :
+    tags:
+      - "v*"
+
+permissions:
+  contents: Write
+  packages: Write
+
+jobs:
+  uploads-registry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Source
+        uses: actions/checkout@v6
+
+      - name: Login GHCR
+        uses: docker/login-actions@v2
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Build Docker
+        run: docker build . -t ghcr.io/${{github.repository_owner}}/contact-list:latest
+
+      - name: Push Image to Registry
+        run: docker push ghcr.io/${{github.repository_owner}}/contact-list:latest
+
+  release-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Source
+        uses: actions/checkout@v4
+
+      - name: Setup GO
+        uses: actions/setup-go@v6
+        with: 
+          go-version-file: go.mod
+
+      - name: Install All Deps
+        run: go mod tidy
+
+      - name: Build App (Linux)
+        run: go build -o contact_list-linux-amd64
+
+      - name: Release Final App
+        uses: softprops/actions-gh-release@v3
+        with: 
+          files : |
+            contact_list-linux-amd64
