@@ -1,6 +1,6 @@
 FROM golang:alpine AS build
 
-WORKDIR /app
+WORKDIR /var/app
 
 COPY go.mod go.sum ./
 RUN go mod download
@@ -15,7 +15,7 @@ ENV POSTGRES_USER=postgres
 ENV POSTGRES_PASSWORD=admin
 
 COPY init.sql /docker-entrypoint-initdb.d
-COPY --from=build /app/main /app
+COPY --from=build /var/app/main /bin/app
 
 WORKDIR /var/app
 COPY --chmod=755 entrypoint.sh .
