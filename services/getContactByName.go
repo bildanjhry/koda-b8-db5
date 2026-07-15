@@ -10,13 +10,12 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func GetContactList() []models.User {
+func GetContactByName(name string) models.UserName {
 	defer func() {
 		if x := recover(); x != nil {
 			fmt.Println(x)
 		}
 	}()
-
 	utils.LoadEnv()
 
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
@@ -25,12 +24,11 @@ func GetContactList() []models.User {
 	}
 	defer conn.Close(context.Background())
 
-	rows, _ := conn.Query(context.Background(), `SELECT "id", "name", "user_contact"."phone" AS "phone" FROM "users"
-	JOIN "user_contact" ON "user_contact"."id_user" = "users"."id";`)
-
-	users, err := pgx.CollectRows(rows, pgx.RowToStructByName[models.User])
+	rows, _ := conn.Query(context.Background(), `SELECT "id", "name" FROM "users" WHERE name=$1`,
+		name)
+	users, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[models.UserName])
 	if err != nil {
-		panic("Can't collect data from db")
+		panic("Can't collect data from db users")
 	}
 	return users
 }

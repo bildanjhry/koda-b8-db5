@@ -1,7 +1,6 @@
 package services
 
 import (
-	"contact-list/models"
 	"contact-list/utils"
 	"context"
 	"fmt"
@@ -10,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func GetContactList() []models.User {
+func DeleteContact(id *int) {
 	defer func() {
 		if x := recover(); x != nil {
 			fmt.Println(x)
@@ -18,19 +17,22 @@ func GetContactList() []models.User {
 	}()
 
 	utils.LoadEnv()
-
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic("Can't connect db")
 	}
 	defer conn.Close(context.Background())
-
-	rows, _ := conn.Query(context.Background(), `SELECT "id", "name", "user_contact"."phone" AS "phone" FROM "users"
-	JOIN "user_contact" ON "user_contact"."id_user" = "users"."id";`)
-
-	users, err := pgx.CollectRows(rows, pgx.RowToStructByName[models.User])
+	commentTag, err := conn.Exec(context.Background(), `DELETE FROM "user_contact" WHERE id_user=$1`,
+		id)
 	if err != nil {
-		panic("Can't collect data from db")
+		panic(err)
 	}
-	return users
+	commentTagUser, err := conn.Exec(context.Background(), `DELETE FROM "users" WHERE id=$1`,
+		id)
+	if err != nil {
+		panic(err)
+	}
+	if commentTag.RowsAffected() != 1 || commentTagUser.RowsAffected() != 1 {
+		panic("No Row Found")
+	}
 }
