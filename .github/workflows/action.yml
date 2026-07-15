@@ -6,8 +6,8 @@ on :
       - "v*"
 
 permissions:
-  contents: Write
-  packages: Write
+  contents: write
+  packages: write
 
 jobs:
   uploads-registry:
