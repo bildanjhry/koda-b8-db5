@@ -1,7 +1,3 @@
-
--- DROP TABLE "users";
--- DROP TABLE "user_contact";
-
 CREATE TABLE "users" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "name" VARCHAR(40),

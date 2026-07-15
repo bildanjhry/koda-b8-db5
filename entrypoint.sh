@@ -1,7 +1,7 @@
 #!/bin/sh
-set -e
-env | grep '^POSTGRES_' | sed 's/^POSTGRES_/PG/' > /app/.env
-echo "Waiting..."
-  sleep 1
+docker-entrypoint.sh postgres &
 
-exec ./contact-list
+env | grep '^POSTGRES_' | sed 's/^POSTGRES_/PG/' > /var/app/.env
+
+until pg_isready -q; do sleep 1; done
+exec /app

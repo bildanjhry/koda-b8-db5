@@ -21,7 +21,7 @@ func GetContactList() []models.User {
 
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
-		panic("Can't connect db")
+		panic(err.Error())
 	}
 	defer conn.Close(context.Background())
 
